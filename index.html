@@ -110,7 +110,8 @@
   .pager-btn { border:none; background:#EAE8E3; color:#4A4641; border-radius:8px; padding:8px 12px; font-size:13px; cursor:pointer; min-width:84px; }
   .pager-btn:disabled { opacity:.45; cursor:not-allowed; }
   .pager-info { font-size:12px; color:#8C847A; flex:1; text-align:center; }
-  @media (max-width: 768px) { .element-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 768px) and (hover: none) and (pointer: coarse) { .element-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  body.in-iframe .element-grid { grid-template-columns:repeat(auto-fill,minmax(70px,1fr)) !important; }
 </style>
 </head>
 <body>
@@ -1737,6 +1738,11 @@ const elements = [
                   ]
     }
 ];
+try {
+  if (window.self !== window.top) document.body.classList.add('in-iframe');
+} catch (_) {
+  document.body.classList.add('in-iframe');
+}
 const byName = Object.fromEntries(elements.map(e => [e.name, e]));
 function esc(s){return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');}
 const enAbbr = {
@@ -2084,6 +2090,7 @@ window.onclick = function(e){ const m=document.getElementById('bookModal'); if(e
 </script>
 </body>
 </html>
+
 
 
 
