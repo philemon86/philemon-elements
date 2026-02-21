@@ -1,0 +1,2080 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+<title>腓利門書房 - 經卷元素表</title>
+<style>
+  :root {
+    --bg-color: #F7F5F0;
+    --text-main: #4A4641;
+    --text-light: #F9F9F9;
+    --color-law: #8BA39E;
+    --color-history: #929FA6;
+    --color-poetry: #BBA99B;
+    --color-prophet: #B89998;
+    --color-gospel: #A3967C;
+    --color-acts: #7F8F98;
+    --color-pauline: #9E8FA7;
+    --color-general: #9C9C88;
+    --color-revelation: #8C6F6C;
+  }
+  body { font-family:'PingFang TC','Microsoft JhengHei',sans-serif; background:var(--bg-color); color:var(--text-main); margin:0; padding:15px; -webkit-font-smoothing:antialiased; }
+  .header { text-align:center; margin-bottom:20px; padding-top:10px; }
+  .header h1 { font-size:22px; margin:0; letter-spacing:2px; }
+  .header p { font-size:13px; color:#8C847A; margin-top:6px; }
+  .guide-text { max-width:700px; margin:0 auto 10px; font-size:12px; color:#776f66; line-height:1.6; text-align:center; }
+  .chip-row { max-width:700px; margin:0 auto 10px; display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+  .chip {
+    border:none; background:#e8e2da; color:#fff; border-radius:999px;
+    padding:6px 12px; font-size:12px; cursor:pointer; opacity:.85;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform: translateY(0);
+  }
+  .chip:hover {
+    opacity:1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+  }
+  .chip:active {
+    transform: scale(0.92) translateY(0);
+    box-shadow: none;
+    transition: all 0.1s;
+  }
+  .chip.active {
+    outline:2px solid #f2ece4;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.08) inset, 0 4px 10px rgba(0,0,0,0.1);
+    opacity:1;
+    transform: translateY(-2px);
+  }
+  .chip.cat-all{ background:#8a8178; }
+  .chip.cat-law{ background:var(--color-law); }
+  .chip.cat-history_ot,.chip.cat-history_nt{ background:var(--color-history); }
+  .chip.cat-poetry{ background:var(--color-poetry); }
+  .chip.cat-major_prophet,.chip.cat-minor_prophet{ background:var(--color-prophet); }
+  .chip.cat-gospel{ background:var(--color-gospel); }
+  .chip.cat-acts{ background:var(--color-acts); }
+  .chip.cat-pauline{ background:var(--color-pauline); }
+  .chip.cat-general{ background:var(--color-general); }
+  .chip.cat-revelation{ background:var(--color-revelation); }
+  .chip.author-chip{ background:#7b746d; }
+  .chip.author-chip.a0{ background:var(--color-law); }
+  .chip.author-chip.a1{ background:var(--color-history); }
+  .chip.author-chip.a2{ background:var(--color-poetry); }
+  .chip.author-chip.a3{ background:var(--color-prophet); }
+  .chip.author-chip.a4{ background:var(--color-gospel); }
+  .chip.author-chip.a5{ background:var(--color-acts); }
+  .chip.author-chip.a6{ background:var(--color-pauline); }
+  .chip.author-chip.a7{ background:var(--color-general); }
+  .chip.author-chip.a8{ background:var(--color-revelation); }
+
+  .section-break { max-width:700px; margin:14px auto 8px; }
+  .element-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(70px,1fr)); gap:10px; max-width:700px; margin:0 auto; }
+  .element {
+    aspect-ratio:1 / 1.1; border-radius:8px; display:flex; flex-direction:column;
+    justify-content:center; align-items:center; color:var(--text-light);
+    cursor:pointer; box-shadow:0 4px 6px rgba(0,0,0,.05); position:relative; padding:5px;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease, filter 0.4s ease, box-shadow 0.3s ease;
+  }
+  .element:active { transform:scale(.92); transition: transform 0.1s; }
+  .element.dimmed { opacity:.15; filter:grayscale(80%) saturate(0.5); transform:scale(0.92); pointer-events:none; }
+  .element.author-focus {
+    transform: scale(1.15);
+    z-index: 10;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+  }
+  .el-num { position:absolute; top:6px; left:8px; font-size:11px; opacity:.82; }
+  .el-abbr { position:absolute; top:6px; right:8px; font-size:11px; opacity:.82; font-weight:700; letter-spacing:.3px; }
+  .el-symbol { font-size:22px; font-weight:bold; margin-top:4px; text-shadow:1px 1px 2px rgba(0,0,0,.1); }
+  .el-name { font-size:11px; margin-top:4px; opacity:.92; letter-spacing:1px; text-align:center; line-height:1.2; }
+  .el-name.long { font-size:10px; letter-spacing:.2px; }
+  .el-name.xlong { font-size:9px; letter-spacing:0; }
+  .cat-law{background:var(--color-law)} .cat-history{background:var(--color-history)} .cat-poetry{background:var(--color-poetry)} .cat-prophet{background:var(--color-prophet)} .cat-gospel{background:var(--color-gospel)} .cat-acts{background:var(--color-acts)} .cat-pauline{background:var(--color-pauline)} .cat-general{background:var(--color-general)} .cat-revelation{background:var(--color-revelation)}
+
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.4); display:none; justify-content:center; align-items:flex-end; z-index:1000; }
+  .modal-content { background:#FFF; width:100%; max-width:560px; max-height:88vh; border-radius:20px 20px 0 0; padding:20px; box-sizing:border-box; overflow:hidden; position:relative; animation:slideUp .25s ease-out; display:flex; flex-direction:column; }
+  @keyframes slideUp { from { transform:translateY(100%);} to { transform:translateY(0);} }
+  .close-btn { position:absolute; top:15px; right:18px; background:#EAE8E3; border:none; width:30px; height:30px; border-radius:50%; font-size:16px; color:var(--text-main); cursor:pointer; }
+  .modal-header h2 { margin:0 0 5px; font-size:22px; }
+  .modal-header p { margin:0 0 16px; font-size:13px; color:#8C847A; }
+  .book-list { display:flex; flex-direction:column; gap:12px; min-height: 360px; overflow:hidden; }
+  .book-card { display:flex; gap:14px; padding:12px; background:#F9F8F6; border-radius:12px; text-decoration:none; color:var(--text-main); border:1px solid #EBE9E4; }
+  .book-cover { width:100px; height:100px; background:#D6CEC3; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; color:#FFF; flex-shrink:0; overflow:hidden; position:relative; }
+  .book-cover-img { width:100%; height:100%; object-fit:cover; display:none; }
+  .book-cover-text { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:11px; color:#FFF; background:#D6CEC3; }
+  .book-info { display:flex; flex-direction:column; justify-content:center; min-width:0; }
+  .book-tag { align-self:flex-start; font-size:11px; background:#E2DFD8; padding:3px 8px; border-radius:20px; margin-bottom:6px; }
+  .book-title { font-size:14px; font-weight:bold; margin-bottom:2px; line-height:1.35; }
+  .book-author { font-size:12px; color:#8C847A; }
+  .modal-pager { margin-top: 10px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .pager-btn { border:none; background:#EAE8E3; color:#4A4641; border-radius:8px; padding:8px 12px; font-size:13px; cursor:pointer; min-width:84px; }
+  .pager-btn:disabled { opacity:.45; cursor:not-allowed; }
+  .pager-info { font-size:12px; color:#8C847A; flex:1; text-align:center; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>經卷現貨圖鑑</h1>
+  <p>元素表版（點擊方塊查看該卷館藏）</p>
+</div>
+<div class="guide-text">新舊約全書附錄：舊約分類分為，包括摩西五經、歷史書、詩歌智慧書、大先知書、小先知書；新約分類分為，包括福音書、歷史書、保羅書信、普通書信、預言書。</div>
+<div class="chip-row" id="categoryChips"></div>
+<div class="section-break"></div>
+<div class="element-grid" id="gridOT"></div>
+<div class="section-break"></div>
+<div class="element-grid" id="gridNT"></div>
+<div class="section-break"></div>
+<div class="chip-row" id="authorChips"></div>
+
+<div class="modal-overlay" id="bookModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeModal()">✕</button>
+    <div class="modal-header">
+      <h2 id="modalTitle">經卷名稱</h2>
+      <p id="modalCount">現有館藏：0 本</p>
+    </div>
+    <div class="book-list" id="modalBookList"></div>
+    <div class="modal-pager" id="modalPager" style="display:none;">
+      <button class="pager-btn" id="prevPageBtn" type="button">上一頁</button>
+      <div class="pager-info" id="pagerInfo">第 1 / 1 頁</div>
+      <button class="pager-btn" id="nextPageBtn" type="button">下一頁</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const elements = [
+    {
+        "num":  1,
+        "symbol":  "創",
+        "name":  "創世記",
+        "cat":  "law",
+        "books":  [
+                      {
+                          "title":  "C184 創世記釋義",
+                          "author":  "黃誌新",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c184"
+                      },
+                      {
+                          "title":  "C016 靈糧分享-創世記",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c016"
+                      },
+                      {
+                          "title":  "C224 杏樹枝1(創、出)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c224"
+                      }
+                  ]
+    },
+    {
+        "num":  2,
+        "symbol":  "出",
+        "name":  "出埃及記",
+        "cat":  "law",
+        "books":  [
+                      {
+                          "title":  "C282 出埃及記要訓",
+                          "author":  "陳恒道",
+                          "tag":  "要訓",
+                          "link":  "https://www.pbooks.com.tw/products/c282"
+                      },
+                      {
+                          "title":  "C019 靈糧分享-出埃及記",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c019"
+                      },
+                      {
+                          "title":  "C224 杏樹枝1(創、出)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c224"
+                      }
+                  ]
+    },
+    {
+        "num":  3,
+        "symbol":  "利",
+        "name":  "利未記",
+        "cat":  "law",
+        "books":  [
+                      {
+                          "title":  "C226 杏樹枝2(利、民、申)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c226"
+                      }
+                  ]
+    },
+    {
+        "num":  4,
+        "symbol":  "民",
+        "name":  "民數記",
+        "cat":  "law",
+        "books":  [
+                      {
+                          "title":  "C158 民數記中之基督",
+                          "author":  "陳勝全",
+                          "tag":  "主類",
+                          "link":  "https://www.pbooks.com.tw/products/c158"
+                      },
+                      {
+                          "title":  "C089 靈糧分享-民數記",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c089"
+                      },
+                      {
+                          "title":  "C226 杏樹枝2(利、民、申)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c226"
+                      }
+                  ]
+    },
+    {
+        "num":  5,
+        "symbol":  "申",
+        "name":  "申命記",
+        "cat":  "law",
+        "books":  [
+                      {
+                          "title":  "C176 申命記導論",
+                          "author":  "陳勝全",
+                          "tag":  "導論",
+                          "link":  "https://www.pbooks.com.tw/products/c176"
+                      },
+                      {
+                          "title":  "C178 申命記查經下",
+                          "author":  "陳勝全",
+                          "tag":  "查經",
+                          "link":  "https://www.pbooks.com.tw/products/c178"
+                      },
+                      {
+                          "title":  "C190 申命記今釋",
+                          "author":  "陳勝全",
+                          "tag":  "今釋",
+                          "link":  "https://www.pbooks.com.tw/products/c190"
+                      },
+                      {
+                          "title":  "C226 杏樹枝2(利、民、申)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c226"
+                      }
+                  ]
+    },
+    {
+        "num":  6,
+        "symbol":  "書",
+        "name":  "約書亞記",
+        "cat":  "history",
+        "books":  [
+                      {
+                          "title":  "C143 約書亞記釋義",
+                          "author":  "邱義雄",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c143"
+                      },
+                      {
+                          "title":  "C162 靈糧分享-約書亞記",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c162"
+                      },
+                      {
+                          "title":  "C238 杏樹枝3(書-撒上下)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c238"
+                      }
+                  ]
+    },
+    {
+        "num":  7,
+        "symbol":  "士",
+        "name":  "士師記",
+        "cat":  "history",
+        "books":  [
+                      {
+                          "title":  "C101 士師速寫",
+                          "author":  "郭祝壽",
+                          "tag":  "主類",
+                          "link":  "https://www.pbooks.com.tw/products/c101"
+                      },
+                      {
+                          "title":  "C238 杏樹枝3(書-撒上下)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c238"
+                      }
+                  ]
+    },
+    {
+        "num":  8,
+        "symbol":  "得",
+        "name":  "路得記",
+        "cat":  "history",
+        "books":  [
+                      {
+                          "title":  "C209 拾取麥穗-路得記講壇",
+                          "author":  "羅贊坤",
+                          "tag":  "講壇",
+                          "link":  "https://www.pbooks.com.tw/products/c209"
+                      },
+                      {
+                          "title":  "C238 杏樹枝3(書-撒上下)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c238"
+                      }
+                  ]
+    },
+    {
+        "num":  9,
+        "symbol":  "撒上",
+        "name":  "撒母耳記上",
+        "cat":  "history",
+        "books":  [
+                      {
+                          "title":  "15013 撒母耳記上釋義",
+                          "author":  "邱義雄",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/1501315014"
+                      },
+                      {
+                          "title":  "C238 杏樹枝3(書-撒上下)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c238"
+                      }
+                  ]
+    },
+    {
+        "num":  10,
+        "symbol":  "撒下",
+        "name":  "撒母耳記下",
+        "cat":  "history",
+        "books":  [
+                      {
+                          "title":  "15014 撒母耳記下釋義",
+                          "author":  "邱義雄",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/1501315014"
+                      },
+                      {
+                          "title":  "C238 杏樹枝3(書-撒上下)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c238"
+                      }
+                  ]
+    },
+    {
+        "num":  11,
+        "symbol":  "王上",
+        "name":  "列王紀上",
+        "cat":  "history",
+        "books":  [
+                      {
+                          "title":  "C255 列王紀與歷代志綜覽",
+                          "author":  "林賢明",
+                          "tag":  "綜覽",
+                          "link":  "https://www.pbooks.com.tw/products/c255"
+                      },
+                      {
+                          "title":  "C010 所羅門與南北朝諸王",
+                          "author":  "黃志新",
+                          "tag":  "主類",
+                          "link":  "https://www.pbooks.com.tw/products/c010"
+                      },
+                      {
+                          "title":  "C240 杏樹枝4(王上下、代上下)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c240"
+                      }
+                  ]
+    },
+    {
+        "num":  12,
+        "symbol":  "王下",
+        "name":  "列王紀下",
+        "cat":  "history",
+        "books":  [
+                      {
+                          "title":  "C255 列王紀與歷代志綜覽",
+                          "author":  "林賢明",
+                          "tag":  "綜覽",
+                          "link":  "https://www.pbooks.com.tw/products/c255"
+                      },
+                      {
+                          "title":  "C010 所羅門與南北朝諸王",
+                          "author":  "黃志新",
+                          "tag":  "主類",
+                          "link":  "https://www.pbooks.com.tw/products/c010"
+                      },
+                      {
+                          "title":  "C240 杏樹枝4(王上下、代上下)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c240"
+                      }
+                  ]
+    },
+    {
+        "num":  13,
+        "symbol":  "代上",
+        "name":  "歷代志上",
+        "cat":  "history",
+        "books":  [
+                      {
+                          "title":  "C255 列王紀與歷代志綜覽",
+                          "author":  "林賢明",
+                          "tag":  "綜覽",
+                          "link":  "https://www.pbooks.com.tw/products/c255"
+                      },
+                      {
+                          "title":  "C010 所羅門與南北朝諸王",
+                          "author":  "黃志新",
+                          "tag":  "主類",
+                          "link":  "https://www.pbooks.com.tw/products/c010"
+                      },
+                      {
+                          "title":  "C240 杏樹枝4(王上下、代上下)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c240"
+                      }
+                  ]
+    },
+    {
+        "num":  14,
+        "symbol":  "代下",
+        "name":  "歷代志下",
+        "cat":  "history",
+        "books":  [
+                      {
+                          "title":  "C255 列王紀與歷代志綜覽",
+                          "author":  "林賢明",
+                          "tag":  "綜覽",
+                          "link":  "https://www.pbooks.com.tw/products/c255"
+                      },
+                      {
+                          "title":  "C010 所羅門與南北朝諸王",
+                          "author":  "黃志新",
+                          "tag":  "主類",
+                          "link":  "https://www.pbooks.com.tw/products/c010"
+                      },
+                      {
+                          "title":  "C240 杏樹枝4(王上下、代上下)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c240"
+                      }
+                  ]
+    },
+    {
+        "num":  15,
+        "symbol":  "拉",
+        "name":  "以斯拉記",
+        "cat":  "history",
+        "books":  [
+                      {
+                          "title":  "C242 杏樹枝5(拉-詩30)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c242"
+                      },
+                      {
+                          "title":  "C244 杏樹枝6(詩31-150)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c244"
+                      },
+                      {
+                          "title":  "C249 杏樹枝7(箴、傳、歌、賽)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c249"
+                      }
+                  ]
+    },
+    {
+        "num":  16,
+        "symbol":  "尼",
+        "name":  "尼希米記",
+        "cat":  "history",
+        "books":  [
+                      {
+                          "title":  "C116 尼希米記釋義",
+                          "author":  "郭祝壽",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c116"
+                      },
+                      {
+                          "title":  "C242 杏樹枝5(拉-詩30)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c242"
+                      },
+                      {
+                          "title":  "C244 杏樹枝6(詩31-150)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c244"
+                      },
+                      {
+                          "title":  "C249 杏樹枝7(箴、傳、歌、賽)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c249"
+                      }
+                  ]
+    },
+    {
+        "num":  17,
+        "symbol":  "斯",
+        "name":  "以斯帖記",
+        "cat":  "history",
+        "books":  [
+                      {
+                          "title":  "C285 以斯帖記講壇",
+                          "author":  "黃基甸",
+                          "tag":  "講壇",
+                          "link":  "https://www.pbooks.com.tw/products/c285"
+                      },
+                      {
+                          "title":  "C242 杏樹枝5(拉-詩30)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c242"
+                      },
+                      {
+                          "title":  "C244 杏樹枝6(詩31-150)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c244"
+                      },
+                      {
+                          "title":  "C249 杏樹枝7(箴、傳、歌、賽)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c249"
+                      }
+                  ]
+    },
+    {
+        "num":  18,
+        "symbol":  "伯",
+        "name":  "約伯記",
+        "cat":  "poetry",
+        "books":  [
+                      {
+                          "title":  "C242 杏樹枝5(拉-詩30)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c242"
+                      },
+                      {
+                          "title":  "C244 杏樹枝6(詩31-150)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c244"
+                      },
+                      {
+                          "title":  "C249 杏樹枝7(箴、傳、歌、賽)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c249"
+                      }
+                  ]
+    },
+    {
+        "num":  19,
+        "symbol":  "詩",
+        "name":  "詩篇",
+        "cat":  "poetry",
+        "books":  [
+                      {
+                          "title":  "C242 杏樹枝5(拉-詩30)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c242"
+                      },
+                      {
+                          "title":  "C244 杏樹枝6(詩31-150)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c244"
+                      },
+                      {
+                          "title":  "C249 杏樹枝7(箴、傳、歌、賽)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c249"
+                      }
+                  ]
+    },
+    {
+        "num":  20,
+        "symbol":  "箴",
+        "name":  "箴言",
+        "cat":  "poetry",
+        "books":  [
+                      {
+                          "title":  "D001 箴言釋義",
+                          "author":  "邱義雄",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/d001"
+                      },
+                      {
+                          "title":  "C242 杏樹枝5(拉-詩30)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c242"
+                      },
+                      {
+                          "title":  "C244 杏樹枝6(詩31-150)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c244"
+                      },
+                      {
+                          "title":  "C249 杏樹枝7(箴、傳、歌、賽)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c249"
+                      }
+                  ]
+    },
+    {
+        "num":  21,
+        "symbol":  "傳",
+        "name":  "傳道書",
+        "cat":  "poetry",
+        "books":  [
+                      {
+                          "title":  "C252 傳道書釋義",
+                          "author":  "田輝煌",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c252"
+                      },
+                      {
+                          "title":  "C242 杏樹枝5(拉-詩30)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c242"
+                      },
+                      {
+                          "title":  "C244 杏樹枝6(詩31-150)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c244"
+                      },
+                      {
+                          "title":  "C249 杏樹枝7(箴、傳、歌、賽)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c249"
+                      }
+                  ]
+    },
+    {
+        "num":  22,
+        "symbol":  "歌",
+        "name":  "雅歌",
+        "cat":  "poetry",
+        "books":  [
+                      {
+                          "title":  "C004 雅歌釋義",
+                          "author":  "邱義雄",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c004"
+                      },
+                      {
+                          "title":  "C242 杏樹枝5(拉-詩30)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c242"
+                      },
+                      {
+                          "title":  "C244 杏樹枝6(詩31-150)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c244"
+                      },
+                      {
+                          "title":  "C249 杏樹枝7(箴、傳、歌、賽)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c249"
+                      }
+                  ]
+    },
+    {
+        "num":  23,
+        "symbol":  "賽",
+        "name":  "以賽亞書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C202 活讀以賽亞書",
+                          "author":  "林永基",
+                          "tag":  "活讀",
+                          "link":  "https://www.pbooks.com.tw/products/c202"
+                      },
+                      {
+                          "title":  "C242 杏樹枝5(拉-詩30)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c242"
+                      },
+                      {
+                          "title":  "C244 杏樹枝6(詩31-150)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c244"
+                      },
+                      {
+                          "title":  "C249 杏樹枝7(箴、傳、歌、賽)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c249"
+                      }
+                  ]
+    },
+    {
+        "num":  24,
+        "symbol":  "耶",
+        "name":  "耶利米書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C159 耶利米書的信息",
+                          "author":  "林賢明",
+                          "tag":  "信息",
+                          "link":  "https://www.pbooks.com.tw/products/c159"
+                      },
+                      {
+                          "title":  "C144 靈糧分享-耶利米書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c144"
+                      },
+                      {
+                          "title":  "C251 杏樹枝8(耶、哀、結)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c251"
+                      }
+                  ]
+    },
+    {
+        "num":  25,
+        "symbol":  "哀",
+        "name":  "耶利米哀歌",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C289 耶利米哀歌的信息",
+                          "author":  "林賢明",
+                          "tag":  "信息",
+                          "link":  "https://www.pbooks.com.tw/products/c289"
+                      },
+                      {
+                          "title":  "C251 杏樹枝8(耶、哀、結)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c251"
+                      }
+                  ]
+    },
+    {
+        "num":  26,
+        "symbol":  "結",
+        "name":  "以西結書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C191 以西結書釋義",
+                          "author":  "林永基",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c191"
+                      },
+                      {
+                          "title":  "C250 靈糧分享-以西結書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c250"
+                      },
+                      {
+                          "title":  "C251 杏樹枝8(耶、哀、結)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c251"
+                      }
+                  ]
+    },
+    {
+        "num":  27,
+        "symbol":  "但",
+        "name":  "但以理書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C109 但以理書釋義",
+                          "author":  "楊約翰",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c109"
+                      },
+                      {
+                          "title":  "C254 杏樹枝9(但-小先知書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c254"
+                      }
+                  ]
+    },
+    {
+        "num":  28,
+        "symbol":  "何",
+        "name":  "何西阿書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C156 何西阿書釋義",
+                          "author":  "蔡梅曦",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c156"
+                      },
+                      {
+                          "title":  "C218 靈糧分享-何西阿書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c218"
+                      },
+                      {
+                          "title":  "C254 杏樹枝9(但-小先知書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c254"
+                      }
+                  ]
+    },
+    {
+        "num":  29,
+        "symbol":  "珥",
+        "name":  "約珥書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C218 靈糧分享-約珥書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c218"
+                      },
+                      {
+                          "title":  "C254 杏樹枝9(但-小先知書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c254"
+                      }
+                  ]
+    },
+    {
+        "num":  30,
+        "symbol":  "摩",
+        "name":  "阿摩司書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C218 靈糧分享-阿摩司書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c218"
+                      },
+                      {
+                          "title":  "C254 杏樹枝9(但-小先知書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c254"
+                      }
+                  ]
+    },
+    {
+        "num":  31,
+        "symbol":  "俄",
+        "name":  "俄巴底亞書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C218 靈糧分享-俄巴底亞書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c218"
+                      },
+                      {
+                          "title":  "C254 杏樹枝9(但-小先知書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c254"
+                      }
+                  ]
+    },
+    {
+        "num":  32,
+        "symbol":  "拿",
+        "name":  "約拿書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C247 約拿書講壇",
+                          "author":  "黃基甸",
+                          "tag":  "講壇",
+                          "link":  "https://www.pbooks.com.tw/products/c247"
+                      },
+                      {
+                          "title":  "C218 靈糧分享-約拿書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c218"
+                      },
+                      {
+                          "title":  "C254 杏樹枝9(但-小先知書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c254"
+                      }
+                  ]
+    },
+    {
+        "num":  33,
+        "symbol":  "彌",
+        "name":  "彌迦書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C254 杏樹枝9(但-小先知書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c254"
+                      }
+                  ]
+    },
+    {
+        "num":  34,
+        "symbol":  "鴻",
+        "name":  "那鴻書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C254 杏樹枝9(但-小先知書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c254"
+                      }
+                  ]
+    },
+    {
+        "num":  35,
+        "symbol":  "哈",
+        "name":  "哈巴穀書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C254 杏樹枝9(但-小先知書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c254"
+                      }
+                  ]
+    },
+    {
+        "num":  36,
+        "symbol":  "番",
+        "name":  "西番雅書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C254 杏樹枝9(但-小先知書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c254"
+                      }
+                  ]
+    },
+    {
+        "num":  37,
+        "symbol":  "該",
+        "name":  "哈該書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C254 杏樹枝9(但-小先知書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c254"
+                      }
+                  ]
+    },
+    {
+        "num":  38,
+        "symbol":  "亞",
+        "name":  "撒迦利亞書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C254 杏樹枝9(但-小先知書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c254"
+                      }
+                  ]
+    },
+    {
+        "num":  39,
+        "symbol":  "瑪",
+        "name":  "瑪拉基書",
+        "cat":  "prophet",
+        "books":  [
+                      {
+                          "title":  "C206 瑪拉基書釋義",
+                          "author":  "林永基",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c206"
+                      },
+                      {
+                          "title":  "C122 瑪拉基書中人與神爭辯",
+                          "author":  "",
+                          "tag":  "主類",
+                          "link":  "https://www.pbooks.com.tw/products/c122"
+                      },
+                      {
+                          "title":  "C254 杏樹枝9(但-小先知書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c254"
+                      }
+                  ]
+    },
+    {
+        "num":  40,
+        "symbol":  "太",
+        "name":  "馬太福音",
+        "cat":  "gospel",
+        "books":  [
+                      {
+                          "title":  "C225 馬太福音釋義",
+                          "author":  "蔡梅曦",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c225"
+                      },
+                      {
+                          "title":  "C259 杏樹枝10(四福音書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c259"
+                      }
+                  ]
+    },
+    {
+        "num":  41,
+        "symbol":  "可",
+        "name":  "馬可福音",
+        "cat":  "gospel",
+        "books":  [
+                      {
+                          "title":  "C012 馬可福音略解",
+                          "author":  "楊約翰",
+                          "tag":  "略解",
+                          "link":  "https://www.pbooks.com.tw/products/c012"
+                      },
+                      {
+                          "title":  "C259 杏樹枝10(四福音書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c259"
+                      }
+                  ]
+    },
+    {
+        "num":  42,
+        "symbol":  "路",
+        "name":  "路加福音",
+        "cat":  "gospel",
+        "books":  [
+                      {
+                          "title":  "C270 路加福音的信息",
+                          "author":  "林賢明",
+                          "tag":  "信息",
+                          "link":  "https://www.pbooks.com.tw/products/c270"
+                      },
+                      {
+                          "title":  "C018 靈糧分享-路加福音",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c018"
+                      },
+                      {
+                          "title":  "C259 杏樹枝10(四福音書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c259"
+                      }
+                  ]
+    },
+    {
+        "num":  43,
+        "symbol":  "約",
+        "name":  "約翰福音",
+        "cat":  "gospel",
+        "books":  [
+                      {
+                          "title":  "C232 約翰福音釋義",
+                          "author":  "林賢明",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c232"
+                      },
+                      {
+                          "title":  "C138 靈糧分享-約翰福音",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c138"
+                      },
+                      {
+                          "title":  "C259 杏樹枝10(四福音書)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c259"
+                      }
+                  ]
+    },
+    {
+        "num":  44,
+        "symbol":  "徒",
+        "name":  "使徒行傳",
+        "cat":  "acts",
+        "books":  [
+                      {
+                          "title":  "C007 使徒行傳的信息",
+                          "author":  "林賢明",
+                          "tag":  "信息",
+                          "link":  "https://www.pbooks.com.tw/products/c007"
+                      },
+                      {
+                          "title":  "C106 靈糧分享-使徒行傳",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c106"
+                      },
+                      {
+                          "title":  "C260 杏樹枝11(徒-腓)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c260"
+                      }
+                  ]
+    },
+    {
+        "num":  45,
+        "symbol":  "羅",
+        "name":  "羅馬書",
+        "cat":  "pauline",
+        "books":  [
+                      {
+                          "title":  "C271 羅馬書講解",
+                          "author":  "謝順道",
+                          "tag":  "講解",
+                          "link":  "https://www.pbooks.com.tw/products/c271"
+                      },
+                      {
+                          "title":  "C088 羅馬書釋義",
+                          "author":  "謝順道",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c088"
+                      },
+                      {
+                          "title":  "C146 靈糧分享-羅馬書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c146"
+                      },
+                      {
+                          "title":  "C260 杏樹枝11(徒-腓)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c260"
+                      }
+                  ]
+    },
+    {
+        "num":  46,
+        "symbol":  "林前",
+        "name":  "哥林多前書",
+        "cat":  "pauline",
+        "books":  [
+                      {
+                          "title":  "C167 哥林多前書釋義",
+                          "author":  "蔡梅曦",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c167"
+                      },
+                      {
+                          "title":  "C273 懇切教導的信-林前",
+                          "author":  "陳殿晃",
+                          "tag":  "主類",
+                          "link":  "https://www.pbooks.com.tw/products/c273"
+                      },
+                      {
+                          "title":  "C211 靈糧分享-哥林多前書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c211"
+                      },
+                      {
+                          "title":  "C260 杏樹枝11(徒-腓)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c260"
+                      }
+                  ]
+    },
+    {
+        "num":  47,
+        "symbol":  "林後",
+        "name":  "哥林多後書",
+        "cat":  "pauline",
+        "books":  [
+                      {
+                          "title":  "C170 哥林多後書釋義",
+                          "author":  "蔡梅曦",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c170"
+                      },
+                      {
+                          "title":  "C281 深感安慰的信-林後",
+                          "author":  "陳殿晃",
+                          "tag":  "主類",
+                          "link":  "https://www.pbooks.com.tw/products/c281"
+                      },
+                      {
+                          "title":  "C211 靈糧分享-哥林多後書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c211"
+                      },
+                      {
+                          "title":  "C260 杏樹枝11(徒-腓)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c260"
+                      }
+                  ]
+    },
+    {
+        "num":  48,
+        "symbol":  "加",
+        "name":  "加拉太書",
+        "cat":  "pauline",
+        "books":  [
+                      {
+                          "title":  "C082 加拉太書釋義",
+                          "author":  "蔡梅曦",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c082"
+                      },
+                      {
+                          "title":  "C260 杏樹枝11(徒-腓)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c260"
+                      }
+                  ]
+    },
+    {
+        "num":  49,
+        "symbol":  "弗",
+        "name":  "以弗所書",
+        "cat":  "pauline",
+        "books":  [
+                      {
+                          "title":  "C165 以弗所書釋義",
+                          "author":  "王明昌",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c165"
+                      },
+                      {
+                          "title":  "C287 以弗所書講壇",
+                          "author":  "黃基甸",
+                          "tag":  "講壇",
+                          "link":  "https://www.pbooks.com.tw/products/c287"
+                      },
+                      {
+                          "title":  "C258 靈糧分享-以弗所書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c258"
+                      },
+                      {
+                          "title":  "C260 杏樹枝11(徒-腓)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c260"
+                      }
+                  ]
+    },
+    {
+        "num":  50,
+        "symbol":  "腓",
+        "name":  "腓立比書",
+        "cat":  "pauline",
+        "books":  [
+                      {
+                          "title":  "C192 腓立比書釋義",
+                          "author":  "王明昌",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c192"
+                      },
+                      {
+                          "title":  "C258 靈糧分享-腓立比書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c258"
+                      },
+                      {
+                          "title":  "C260 杏樹枝11(徒-腓)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c260"
+                      }
+                  ]
+    },
+    {
+        "num":  51,
+        "symbol":  "西",
+        "name":  "歌羅西書",
+        "cat":  "pauline",
+        "books":  [
+                      {
+                          "title":  "C239 歌羅西書釋義",
+                          "author":  "王明昌",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c239"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  52,
+        "symbol":  "帖前",
+        "name":  "帖撒羅尼迦前書",
+        "cat":  "pauline",
+        "books":  [
+                      {
+                          "title":  "C245 帖撒羅尼迦前後書釋義",
+                          "author":  "田輝煌",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c245"
+                      },
+                      {
+                          "title":  "C258 靈糧分享-帖撒羅尼迦前書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c258"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  53,
+        "symbol":  "帖後",
+        "name":  "帖撒羅尼迦後書",
+        "cat":  "pauline",
+        "books":  [
+                      {
+                          "title":  "C245 帖撒羅尼迦前後書釋義",
+                          "author":  "田輝煌",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c245"
+                      },
+                      {
+                          "title":  "C258 靈糧分享-帖撒羅尼迦後書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c258"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  54,
+        "symbol":  "提前",
+        "name":  "提摩太前書",
+        "cat":  "pauline",
+        "books":  [
+                      {
+                          "title":  "C237 活讀提摩太前後書",
+                          "author":  "林永基",
+                          "tag":  "活讀",
+                          "link":  "https://www.pbooks.com.tw/products/c237"
+                      },
+                      {
+                          "title":  "C214 活讀提多書",
+                          "author":  "林永基",
+                          "tag":  "活讀",
+                          "link":  "https://www.pbooks.com.tw/products/c214"
+                      },
+                      {
+                          "title":  "C210 靈糧分享-提摩太前書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c210"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  55,
+        "symbol":  "提後",
+        "name":  "提摩太後書",
+        "cat":  "pauline",
+        "books":  [
+
+                  ]
+    },
+    {
+        "num":  56,
+        "symbol":  "多",
+        "name":  "提多書",
+        "cat":  "pauline",
+        "books":  [
+                      {
+                          "title":  "C237 活讀提摩太前後書",
+                          "author":  "林永基",
+                          "tag":  "活讀",
+                          "link":  "https://www.pbooks.com.tw/products/c237"
+                      },
+                      {
+                          "title":  "C214 活讀提多書",
+                          "author":  "林永基",
+                          "tag":  "活讀",
+                          "link":  "https://www.pbooks.com.tw/products/c214"
+                      },
+                      {
+                          "title":  "C210 靈糧分享-提多書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c210"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  57,
+        "symbol":  "門",
+        "name":  "腓利門書",
+        "cat":  "pauline",
+        "books":  [
+                      {
+                          "title":  "C133 腓利門書釋義",
+                          "author":  "邱義雄",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c133"
+                      },
+                      {
+                          "title":  "C258 靈糧分享-腓利門書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c258"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  58,
+        "symbol":  "來",
+        "name":  "希伯來書",
+        "cat":  "general",
+        "books":  [
+                      {
+                          "title":  "C256 希伯來書釋義",
+                          "author":  "陳忠揚",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c256"
+                      },
+                      {
+                          "title":  "C196 靈糧分享-希伯來書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c196"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  59,
+        "symbol":  "雅",
+        "name":  "雅各書",
+        "cat":  "general",
+        "books":  [
+                      {
+                          "title":  "C189 靈糧分享-雅各書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c189"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  60,
+        "symbol":  "彼前",
+        "name":  "彼得前書",
+        "cat":  "general",
+        "books":  [
+                      {
+                          "title":  "C205 靈糧分享-彼得前書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c205"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  61,
+        "symbol":  "彼後",
+        "name":  "彼得後書",
+        "cat":  "general",
+        "books":  [
+                      {
+                          "title":  "C205 靈糧分享-彼得後書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c205"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  62,
+        "symbol":  "約壹",
+        "name":  "約翰一書",
+        "cat":  "general",
+        "books":  [
+                      {
+                          "title":  "C152 約翰一二三書釋義",
+                          "author":  "林永基",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c152"
+                      },
+                      {
+                          "title":  "C205 靈糧分享-約翰一書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c205"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  63,
+        "symbol":  "約貳",
+        "name":  "約翰二書",
+        "cat":  "general",
+        "books":  [
+                      {
+                          "title":  "C152 約翰一二三書釋義",
+                          "author":  "林永基",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c152"
+                      },
+                      {
+                          "title":  "C205 靈糧分享-約翰二書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c205"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  64,
+        "symbol":  "約參",
+        "name":  "約翰三書",
+        "cat":  "general",
+        "books":  [
+                      {
+                          "title":  "C152 約翰一二三書釋義",
+                          "author":  "林永基",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c152"
+                      },
+                      {
+                          "title":  "C205 靈糧分享-約翰三書",
+                          "author":  "謝溪海 長老",
+                          "tag":  "靈糧分享",
+                          "link":  "https://www.pbooks.com.tw/products/c205"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  65,
+        "symbol":  "猶",
+        "name":  "猶大書",
+        "cat":  "general",
+        "books":  [
+                      {
+                          "title":  "C014 腓利門*猶大書釋義",
+                          "author":  "林從道",
+                          "tag":  "釋義",
+                          "link":  "https://www.pbooks.com.tw/products/c014"
+                      },
+                      {
+                          "title":  "C185 活讀猶大書",
+                          "author":  "林永基",
+                          "tag":  "活讀",
+                          "link":  "https://www.pbooks.com.tw/products/c185"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    },
+    {
+        "num":  66,
+        "symbol":  "啟",
+        "name":  "啟示錄",
+        "cat":  "revelation",
+        "books":  [
+                      {
+                          "title":  "C005 啟示錄的研究",
+                          "author":  "黃以利沙",
+                          "tag":  "研究",
+                          "link":  "https://www.pbooks.com.tw/products/c005"
+                      },
+                      {
+                          "title":  "C261 杏樹枝12(西-啟)",
+                          "author":  "",
+                          "tag":  "杏樹枝",
+                          "link":  "https://www.pbooks.com.tw/products/c261"
+                      }
+                  ]
+    }
+];
+const byName = Object.fromEntries(elements.map(e => [e.name, e]));
+function esc(s){return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');}
+const enAbbr = {
+  '創世記':'GEN','出埃及記':'EXO','利未記':'LEV','民數記':'NUM','申命記':'DEU','約書亞記':'JOS','士師記':'JDG','路得記':'RUT',
+  '撒母耳記上':'1SA','撒母耳記下':'2SA','列王紀上':'1KI','列王紀下':'2KI','歷代志上':'1CH','歷代志下':'2CH','以斯拉記':'EZR','尼希米記':'NEH','以斯帖記':'EST',
+  '約伯記':'JOB','詩篇':'PSA','箴言':'PRO','傳道書':'ECC','雅歌':'SNG','以賽亞書':'ISA','耶利米書':'JER','耶利米哀歌':'LAM','以西結書':'EZK','但以理書':'DAN',
+  '何西阿書':'HOS','約珥書':'JOL','阿摩司書':'AMO','俄巴底亞書':'OBA','約拿書':'JON','彌迦書':'MIC','那鴻書':'NAM','哈巴穀書':'HAB','西番雅書':'ZEP',
+  '哈該書':'HAG','撒迦利亞書':'ZEC','瑪拉基書':'MAL','馬太福音':'MAT','馬可福音':'MRK','路加福音':'LUK','約翰福音':'JHN','使徒行傳':'ACT',
+  '羅馬書':'ROM','哥林多前書':'1CO','哥林多後書':'2CO','加拉太書':'GAL','以弗所書':'EPH','腓立比書':'PHP','歌羅西書':'COL','帖撒羅尼迦前書':'1TH','帖撒羅尼迦後書':'2TH',
+  '提摩太前書':'1TI','提摩太後書':'2TI','提多書':'TIT','腓利門書':'PHM','希伯來書':'HEB','雅各書':'JAS','彼得前書':'1PE','彼得後書':'2PE',
+  '約翰一書':'1JN','約翰二書':'2JN','約翰三書':'3JN','猶大書':'JUD','啟示錄':'REV'
+};
+const imageCache = {};
+
+function hasBook(target, link){
+  return (target.books || []).some(b => b.link === link);
+}
+function addBookToBooks(book, targetNames){
+  for (const n of targetNames) {
+    const target = byName[n];
+    if (!target) continue;
+    if (!target.books) target.books = [];
+    if (!hasBook(target, book.link)) target.books.push({ ...book });
+  }
+}
+
+// 主題書自動分配：把總論/主題書分配回對應經卷
+addBookToBooks(
+  { title:'C234 五經典考', author:'陳勝全', tag:'綜覽', link:'https://www.pbooks.com.tw/products/c234' },
+  ['創世記','出埃及記','利未記','民數記','申命記']
+);
+addBookToBooks(
+  { title:'C139 監獄書信的信息', author:'林賢明', tag:'主題書信', link:'https://www.pbooks.com.tw/products/c139' },
+  ['以弗所書','腓立比書','歌羅西書','腓利門書']
+);
+// Ensure prison-epistles guide appears on all 4 prison epistles.
+addBookToBooks(
+  { title:'C272 保羅監獄書信釋義', author:'蔡梅曦', tag:'主題書信', link:'https://www.pbooks.com.tw/products/c272' },
+  ['以弗所書','腓立比書','歌羅西書','腓利門書']
+);
+addBookToBooks(
+  { title:'C275 教牧書信', author:'蔡恒忠', tag:'主題書信', link:'https://www.pbooks.com.tw/products/c275' },
+  ['提摩太前書','提摩太後書','提多書']
+);
+addBookToBooks(
+  { title:'C083 新約讀經指引', author:'林永基', tag:'讀經指引', link:'https://www.pbooks.com.tw/products/c083' },
+  ['馬太福音','馬可福音','路加福音','約翰福音','使徒行傳','羅馬書','哥林多前書','哥林多後書','加拉太書','以弗所書','腓立比書','歌羅西書','帖撒羅尼迦前書','帖撒羅尼迦後書','提摩太前書','提摩太後書','提多書','腓利門書','希伯來書','雅各書','彼得前書','彼得後書','約翰一書','約翰二書','約翰三書','猶大書','啟示錄']
+);
+addBookToBooks(
+  { title:'C001 對觀福音書', author:'林獻生', tag:'福音綜覽', link:'https://www.pbooks.com.tw/products/c001' },
+  ['馬太福音','馬可福音','路加福音','約翰福音']
+);
+addBookToBooks(
+  { title:'C100 小先知書略解', author:'朱榮道', tag:'先知總覽', link:'https://www.pbooks.com.tw/products/c100' },
+  ['何西阿書','約珥書','阿摩司書','俄巴底亞書','約拿書','彌迦書','那鴻書','哈巴穀書','西番雅書','哈該書','撒迦利亞書','瑪拉基書']
+);
+addBookToBooks(
+  { title:'C218 靈糧分享-小先知書1', author:'謝溪海 長老', tag:'靈糧分享', link:'https://www.pbooks.com.tw/products/c218' },
+  ['何西阿書','約珥書','阿摩司書','俄巴底亞書','約拿書']
+);
+
+function normalizeAuthor(book){
+  let a = String(book.author || '').trim();
+  if (a === '謝溪海 長老') a = '謝溪海';
+  if (a === '黃志新') a = '黃誌新';
+  if (String(book.title || '').includes('C010')) a = '黃誌新';
+  if (String(book.title || '').includes('C004')) a = '蔡聖民';
+  if (!a && book.tag === '杏樹枝') a = '杏樹枝';
+  return a;
+}
+for (const e of elements) {
+  for (const b of (e.books || [])) {
+    b.author = normalizeAuthor(b);
+  }
+}
+
+function pickImageFromJsonLd(obj){
+  if (!obj) return '';
+  if (Array.isArray(obj)) {
+    for (const it of obj) { const u = pickImageFromJsonLd(it); if (u) return u; }
+    return '';
+  }
+  if (typeof obj === 'object') {
+    if (obj.image) {
+      if (typeof obj.image === 'string') return obj.image;
+      if (Array.isArray(obj.image) && obj.image.length) return String(obj.image[0] || '');
+      if (typeof obj.image === 'object' && obj.image.url) return String(obj.image.url);
+    }
+    if (obj['@graph']) return pickImageFromJsonLd(obj['@graph']);
+    if (obj.mainEntity) return pickImageFromJsonLd(obj.mainEntity);
+  }
+  return '';
+}
+
+function extractImageFromHtml(html){
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  // Prefer social preview images first; they are usually higher resolution.
+  const og = doc.querySelector('meta[property=\"og:image\"], meta[name=\"og:image\"]');
+  if (og && og.getAttribute('content')) return og.getAttribute('content');
+  const tw = doc.querySelector('meta[name=\"twitter:image\"], meta[property=\"twitter:image\"]');
+  if (tw && tw.getAttribute('content')) return tw.getAttribute('content');
+  const scripts = doc.querySelectorAll('script[type=\"application/ld+json\"]');
+  for (const s of scripts) {
+    const txt = (s.textContent || '').trim();
+    if (!txt) continue;
+    try {
+      const obj = JSON.parse(txt);
+      const u = pickImageFromJsonLd(obj);
+      if (u) return u;
+    } catch (_) {
+      // Some pages embed non-standard JSON; ignore and continue.
+    }
+  }
+  return '';
+}
+
+function upscaleIfThumb(url){
+  if (!url) return '';
+  let u = String(url);
+  // Common tiny thumb marker in Cybassets URLs.
+  if (u.includes('32x32')) u = u.replaceAll('32x32', '600x600');
+  if (u.includes('64x64')) u = u.replaceAll('64x64', '800x800');
+  return u;
+}
+
+async function fetchProductImage(url){
+  if (url in imageCache) return imageCache[url];
+  const targets = [
+    'https://corsproxy.io/?' + encodeURIComponent(url),
+    'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+    'https://r.jina.ai/http://' + url.replace('https://', '').replace('http://', ''),
+    url
+  ];
+  for (const t of targets) {
+    try {
+      const res = await fetch(t, { method:'GET' });
+      if (!res.ok) continue;
+      const html = await res.text();
+      const image = upscaleIfThumb(extractImageFromHtml(html));
+      if (image) {
+        imageCache[url] = image;
+        return image;
+      }
+    } catch (_) {}
+  }
+  imageCache[url] = '';
+  return '';
+}
+
+async function hydrateCovers(root){
+  const covers = root.querySelectorAll('.book-cover[data-link]');
+  for (const cover of covers) {
+    const link = cover.getAttribute('data-link') || '';
+    if (!link) continue;
+    const imgUrl = await fetchProductImage(link);
+    if (!imgUrl) continue;
+    const img = cover.querySelector('.book-cover-img');
+    const txt = cover.querySelector('.book-cover-text');
+    if (img) {
+      img.src = imgUrl;
+      img.style.display = 'block';
+    }
+    if (txt) txt.style.display = 'none';
+  }
+}
+
+function getGroupKey(e){
+  if (e.num >= 1 && e.num <= 5) return 'law';
+  if (e.num >= 6 && e.num <= 17) return 'history_ot';
+  if (e.num >= 18 && e.num <= 22) return 'poetry';
+  if (e.num >= 23 && e.num <= 27) return 'major_prophet';
+  if (e.num >= 28 && e.num <= 39) return 'minor_prophet';
+  if (e.num >= 40 && e.num <= 43) return 'gospel';
+  if (e.num === 44) return 'history_nt';
+  if (e.num >= 45 && e.num <= 57) return 'pauline';
+  if (e.num >= 58 && e.num <= 65) return 'general';
+  return 'revelation';
+}
+
+const categoryDefs = [
+  { key:'all', label:'全部' },
+  { key:'law', label:'摩西五經' },
+  { key:'history_ot', label:'歷史書(舊約)' },
+  { key:'poetry', label:'詩歌智慧書' },
+  { key:'major_prophet', label:'大先知書' },
+  { key:'minor_prophet', label:'小先知書' },
+  { key:'gospel', label:'福音書' },
+  { key:'history_nt', label:'歷史書(新約)' },
+  { key:'pauline', label:'保羅書信' },
+  { key:'general', label:'普通書信' },
+  { key:'revelation', label:'預言書' }
+];
+
+function elementHTML(e){
+  const groupKey = getGroupKey(e);
+  return `
+  <div class="element cat-${e.cat}" data-group="${groupKey}" data-book-name="${esc(e.name)}" onclick="openBookModal('${esc(e.name)}')">
+    <span class="el-num">${e.num}</span>
+    <span class="el-abbr">${esc(enAbbr[e.name] || '')}</span>
+    <span class="el-symbol">${esc(e.symbol||'')}</span>
+    <span class="el-name ${e.name.length >= 7 ? 'xlong' : (e.name.length >= 6 ? 'long' : '')}">${esc(e.name)}</span>
+  </div>`;
+}
+
+const gridOT = document.getElementById('gridOT');
+const gridNT = document.getElementById('gridNT');
+const oldBooks = elements.filter(e => e.num <= 39);
+const newBooks = elements.filter(e => e.num >= 40).sort((a,b)=>a.num-b.num);
+gridOT.innerHTML = oldBooks.map(elementHTML).join('');
+gridNT.innerHTML = newBooks.map(elementHTML).join('');
+
+const categoryChips = document.getElementById('categoryChips');
+categoryChips.innerHTML = categoryDefs.map((c,i)=>`<button class="chip cat-${c.key} ${i===0?'active':''}" data-group="${c.key}" type="button">${c.label}</button>`).join('');
+function applyGroupFilter(key){
+  const tiles = document.querySelectorAll('.element');
+  tiles.forEach(t => {
+    if (key === 'all' || t.getAttribute('data-group') === key) t.classList.remove('dimmed');
+    else t.classList.add('dimmed');
+  });
+  categoryChips.querySelectorAll('.chip').forEach(ch => ch.classList.toggle('active', ch.getAttribute('data-group') === key));
+}
+categoryChips.addEventListener('click', (e)=>{
+  const b = e.target.closest('.chip');
+  if (!b) return;
+  applyGroupFilter(b.getAttribute('data-group') || 'all');
+});
+
+const authorMap = new Map();
+for (const e of elements) {
+  for (const b of (e.books || [])) {
+    const author = normalizeAuthor(b);
+    if (!author) continue;
+    if (!authorMap.has(author)) authorMap.set(author, new Map());
+    const byLink = authorMap.get(author);
+    const key = b.link;
+    if (!byLink.has(key)) {
+      byLink.set(key, { title: b.title, author, tag: b.tag, link: b.link, books: new Set([e.name]) });
+    } else {
+      byLink.get(key).books.add(e.name);
+    }
+  }
+}
+const authorList = Array.from(authorMap.keys()).sort((a,b)=>a.localeCompare(b,'zh-Hant'));
+const authorChips = document.getElementById('authorChips');
+authorChips.innerHTML = authorList.map((a,idx)=>`<button class="chip author-chip a${idx % 9}" data-author-idx="${idx}" type="button">${esc(a)}</button>`).join('');
+
+authorChips.addEventListener('click', (e)=>{
+  const b = e.target.closest('.chip');
+  if (!b) return;
+  const idx = Number(b.getAttribute('data-author-idx'));
+  if (Number.isNaN(idx) || idx < 0 || idx >= authorList.length) return;
+  const name = authorList[idx];
+  const byLink = authorMap.get(name);
+  if (!byLink) return;
+  authorChips.querySelectorAll('.chip').forEach(ch => ch.classList.remove('active'));
+  b.classList.add('active');
+
+  const authorBookNames = new Set();
+  Array.from(byLink.values()).forEach(it => {
+    if (it.books) {
+      it.books.forEach(bookName => authorBookNames.add(bookName));
+    }
+  });
+  document.querySelectorAll('.element').forEach(el => {
+    const n = el.getAttribute('data-book-name') || '';
+    if (authorBookNames.has(n)) {
+      el.classList.remove('author-focus');
+      void el.offsetWidth;
+      el.classList.add('author-focus');
+      setTimeout(() => el.classList.remove('author-focus'), 320);
+    }
+  });
+
+  const books = Array.from(byLink.values()).map(it => ({
+    title: it.title,
+    author: it.author,
+    tag: it.tag,
+    link: it.link
+  }));
+  setTimeout(() => {
+    openCollectionModal(`作者：${name}`, books, books.length ? `共 ${books.length} 本` : '目前尚無建檔資料');
+  }, 150);
+});
+
+function openCollectionModal(title, books, countText, coverLabel){
+  document.getElementById('modalTitle').innerText = title;
+  document.getElementById('modalCount').innerText = countText;
+  const list = document.getElementById('modalBookList');
+  const pager = document.getElementById('modalPager');
+  const prevBtn = document.getElementById('prevPageBtn');
+  const nextBtn = document.getElementById('nextPageBtn');
+  const pagerInfo = document.getElementById('pagerInfo');
+  const mark = String(coverLabel || title || '').slice(0,2);
+  const pageSize = 3;
+  let page = 1;
+
+  function renderPage(){
+    const rows = books || [];
+    const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+    if (page > totalPages) page = totalPages;
+    const start = (page - 1) * pageSize;
+    const pageBooks = rows.slice(start, start + pageSize);
+    pager.style.display = rows.length > pageSize ? 'flex' : 'none';
+    pagerInfo.innerText = `第 ${page} / ${totalPages} 批`;
+    prevBtn.disabled = page <= 1;
+    nextBtn.disabled = page >= totalPages;
+    list.innerHTML = pageBooks.map(b => `
+      <a href="${esc(b.link)}" target="_blank" class="book-card">
+        <div class="book-cover" data-link="${esc(b.link)}">
+          <img class="book-cover-img" alt="${esc(b.title)}"/>
+          <span class="book-cover-text">${esc(mark)}</span>
+        </div>
+        <div class="book-info">
+          <span class="book-tag">${esc(b.tag === '主類' ? '釋義' : b.tag)}</span>
+          <div class="book-title">${esc(b.title)}</div>
+          <div class="book-author">${esc(b.author || '')}</div>
+        </div>
+      </a>
+    `).join('');
+    hydrateCovers(list);
+  }
+
+  if(!(books || []).length){
+    pager.style.display = 'none';
+    list.innerHTML = '<p style="text-align:center; color:#8C847A; padding:20px;">此經卷暫無對應書籍或尚未上架。</p>';
+  } else {
+    prevBtn.onclick = function(){ if (page > 1) { page--; renderPage(); } };
+    nextBtn.onclick = function(){ const max = Math.max(1, Math.ceil((books || []).length / pageSize)); if (page < max) { page++; renderPage(); } };
+    renderPage();
+  }
+  document.getElementById('bookModal').style.display='flex';
+}
+
+function openBookModal(bookName){
+  const data = byName[bookName] || {books:[]};
+  openCollectionModal(bookName, data.books || [], data.books && data.books.length ? `現有館藏：${data.books.length} 本` : '目前尚無建檔資料', bookName);
+}
+function closeModal(){ document.getElementById('bookModal').style.display='none'; }
+window.onclick = function(e){ const m=document.getElementById('bookModal'); if(e.target===m){ m.style.display='none'; } };
+</script>
+</body>
+</html>
